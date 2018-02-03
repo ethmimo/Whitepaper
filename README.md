@@ -1,6 +1,6 @@
 # ERC-ME: A Standard for Tokenized Pseudo-identities
 
-Last Revision: 31/01/2018
+Last Revision: 03/02/2018
 
 Ghilia Weldesselasie -- <a href='mailto:ghiliaweld@gmail.com'>ghiliaweld@gmail.com</a></br>
 <i>Computer Science and Mathematics -- @ Vanier College</i></br>

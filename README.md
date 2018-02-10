@@ -92,7 +92,7 @@ metadata["some game:guild name"] = "Da Best Guild";
 The `followerCount` and `followingCount` are `uint32`s that track how many followers you have and how many people you're following.
 
 #### The `followers` & `following` arrays
-The `followers` and `following` are `uint` arrays that track who exactly is following you and how you're following. `uint` is used since the profiles are tracked through their `profileId` and not their `name`.
+The `followers` and `following` are `uint` arrays that track who exactly is following you and who you're following. `uint` is used since the profiles are tracked through their `profileId` and not their `name`.
 
 #### The `createdBy` address
 The `createdBy` property stores the address of whoever created a `profile` (it might not necessarily be who currently owns the profile).

@@ -45,7 +45,7 @@ Why?:
 
 ### Overview
 
-Each `Profile` on the ERC-ME contract is represented by an *Non-Fungible [ERC-721](https://github.com/ethereum/eips/issues/721) token*, meaning they can be transferred, traded and since they are actually a `struct` that mean that state changes can be made to them. In this section we will go over the specification of each `Profile` and it's associated functions.
+Each `Profile` on the ERC-ME contract is represented by an *Non-Fungible [ERC-721](https://github.com/ethereum/eips/issues/721) token*, meaning they can be transferred, traded and since they are actually a `struct` that mean that state changes can be made to them. In this section we will go over the specification of each `Profile`.
 
 ### The `Profile` (In-Depth)
 

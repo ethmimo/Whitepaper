@@ -17,10 +17,12 @@ What ERC-ME is going for can be summed up in three words: **Experiences, not ser
 2. [Specification](#specification)
    1. [Overview](#overview)
    2. [The Profile](#the-profile-in-depth)
-   3. [ERC-ME Functions](#erc-me-functions)
 3. [Use Cases](#use-cases)
 4. [Limitations](#limitations)
-5. [Roadmap](#roadmap)
+5. [Crowdfunding](#crowdfunding)
+   1. [Presale Details](#presale-details)
+   2. [Mainsale Details](#mainsale-details)
+6. [Roadmap](#roadmap)
 
 ## Introduction
 
@@ -100,210 +102,6 @@ The `createdBy` property stores the address of whoever created a `profile` (it m
 #### The `dateCreated` uint64
 The `dateCreated` property stores a timestamp of when a `profile` was created on the blockchain.
 
-### ERC-ME Functions
-
-`createProfile()` allows us to create new profile and mint a corresponding ERC-721 token with it.
-```
-function createProfile(string name, string handle) external payable {
-        require(name != ""); // No empty strings as names
-        require(handle != ""); // No empty strings as handles
-        require(_checkUniqueName(name));
-        require(_checkUniqueHandle(handle));
-
-        // Donation logic // If somebody decides to send a donation along with the function,
-        // let the function accept and send it to my address.
-        CONTROLLER.transfer(msg.value);
-
-        // Mint the profile
-        _mint(msg.sender, name, handle);
-}
-```
-`deleteProfile()` allows us to delete our profile.
-```
-function deleteProfile(uint256 profileId) external {
-        // Delete a profile you own
-        require(_owns(msg.sender, profileId));
-        delete profiles[profileId];
-        _transfer(msg.sender, address(0), profileId); // Destroys the ERC-721 token
-        ProfileDestroyed(msg.sender, profileId);
-}
-```
-
-#### `name` functions
-`_checkUniqueName()` is a view function that returns a bool (true or false) which tells us whether the name we're using in the ERC-ME contract is unique or not.
-
-```
-function _checkUniqueName(string _name) internal view returns(bool) {
-        // Loops through our profiles array to check if the name we want to use is already taken
-        for (uint i = 0; i <= profiles.length; i++) {
-            if (keccak256(_name) == keccak256(profiles[i].name)) {
-                return false;
-            }
-        }
-        return true;
-}
-```
-`changeName()` is a function that allows us to change the name of our profile.
-
-```
-function changeName(string newName, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        require(_checkUniqueName(newName));
-        profiles[profileId].name = newName;
-        NameChange(profileId, newName);
-}
-```
-
-#### `handle` functions
-`_checkUniqueHandle()` is a view function that returns a bool (true or false) which tells us whether the name we're using in the ERC-ME contract is unique or not.
-
-```
-function _checkUniqueHandle(string _handle) internal view returns(bool) {
-        // Loops through our profiles array to check if the handle we want to use is already taken
-        for (uint i = 0; i <= profiles.length; i++) {
-            if (keccak256(_handle) == keccak256(profiles[i].handle)) {
-                return false;
-            }
-        }
-        return true;
-}
-```
-`changeHandle()` is a function that allows us to change the name of our profile.
-
-```
-function changeHandle(string newHandle, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        require(_checkUniqueHandle(newHandle));
-        profiles[profileId].handle = newHandle;
-        HandleChange(profileId, newHandle);
-}
-```
-
-#### `bio` functions
-`editBio()` is a function that allows us to edit our profile's bio.
-```
-function editBio(string newBio, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        profiles[profileId].bio = newBio;
-}
-```
-
-#### `publicKey` functions
-`changeKey()` is a function that allows us to edit our profile's bio.
-```
-function changeKey(string newPublicKey, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        profiles[profileId].publicKey = newPublicKey;
-}
-```
-
-#### `follow` functions
-
-```
-function _newFollow(uint256 _initiatorId, uint256 _targetId) internal {
-        /* Triggered when somebody follows another person
-        followIncrease is used when deferred updating is enabled
-        A following is added to the initiator and a follower is added to the target */
-
-        require(_owns(msg.sender, _initiatorId));
-        require(_initiatorId != _targetId); // make sure we're not following ourselves
-        require(profiles[_initiatorId].following.indexOf(_targetId) < 0); // make sure we're not refollowing someone
-        profiles[_initiatorId].following.push(_targetId);
-        profiles[_targetId].followers.push(_initiatorId);
-        // ^^ ** Does this work?
-
-        // And now for the follower counts
-        profiles[_initiatorId].followingCount = profiles[_initiatorId].following.length;
-        profiles[_targetId].followerCount = profiles[_targetId].followers.length;
-        // ^^ ** Does this work?
-        NewFollow(_initiatorId, _targetId);
-    }
-```
-
-```
-    function _newUnfollow(uint256 _initiatorId, uint256 _targetId) internal {
-        /* Triggered when somebody unfollows another person
-        A following is subtracted from the initiator and a follower is subtracted from the target */
-
-        require(_owns(msg.sender, _initiatorId));
-        require(_initiatorId != _targetId); // make sure we're not unfollowing ourselves
-        require(profiles[_initiatorId].following.indexOf(_targetId) >= 0);
-        // make sure we're not unfollowing someone we weren't following in the first place
-        delete profiles[_initiatorId].following[profiles[_initiatorId].following.indexOf(_targetId)];
-        delete profiles[_targetId].followers[profiles[_targetId].followers.indexOf(_initiatorId)];
-        // ^^ ** Does this work?
-
-        // And now for the follower counts
-        profiles[_initiatorId].followingCount = profiles[_initiatorId].following.length;
-        profiles[_targetId].followerCount = profiles[_targetId].followers.length;
-        // ^^ ** Does this work?
-        NewUnfollow(_initiatorId, _targetId);
-    }
-    // The 2 functions below will take care of deferred/bulk updating
-    // The bulk functions will be the ones called even in the case of a single following
-    // since newFollow/newUnfollow have been made internal.
-```
-The `bulkFollow()` and `bulkUnfollow()` functions allow a profile to take an array of profileIds they want to follow and follow them all at once. This is how deferred updating would be implemented, however there is still more work to do in order to further optimize the follow function since they will consume the most gas an a very frequent rate.
-```
-    function bulkFollow(uint initiatorId, uint[] multipleTargetIds) external {
-        for (uint8 i = 0; i <= multipleTargetIds.length; i++) {
-            _newFollow(initiatorId, multipleTargetIds[i]);
-        }
-    }
-```
-
-```
-    function bulkUnfollow(uint initiatorId, uint[] multipleTargetIds) external {
-        for (uint8 i = 0; i <= multipleTargetIds.length; i++) {
-            _newUnfollow(initiatorId, multipleTargetIds[i]);
-        }
-}
-```
-#### `metadata` functions
-There are two kinds of metadata functions: the **global** metadata functions that can be used to edit global metadata like location or age and the **standard** metadata functions that can be used to accessed Dapp-specific metadata with different namespaces.
-
-```
-function editMetadata(string metaKey, string metaValue, uint256 profileId, string namespace) external {
-        require(_owns(msg.sender, profileId));
-        require(namespace != ""); // Makes sure namespace isn't an empty string
-        require(metaKey != ""); // Makes sure metaKey isn't an empty string
-        // The code below works for both editing an existing key/value pair
-        // and for creating a new pair as well
-        // namespace is the app from which this metadata comes from. Ex: Social Dapp
-        // ** Do default parameters work in Solidity?
-        // metaKey is the key (a string) we will be looking up. Ex: website
-        //metaValue is the value that search will return. Ex: https://ghiliweld.github.io
-        // profiles[profileId].metadata["Social Dapp:website"] = "https://ghiliweld.github.io"
-        profiles[profileId].metadata[namespace + ":" + metaKey] = metaValue;
-    }
-  ```
-
-  ```
-    // editGlobalMetadata and removeGlobalMetadata are subject to removal
-    /* I'm deciding between makings seperate functions for global metadata or
-    making global a standard the in the docs specification unless the Dapp needs to be specified.*/
-    function editGlobalMetadata(string metaKey, string metaValue, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        require(metaKey != ""); // Makes sure metaKey isn't an empty string
-        profiles[profileId].metadata["global:" + metaKey] = metaValue;
-    }
-```
-
-```
-    function removeMetadata(string metaKey, uint256 profileId, string namespace) external {
-        require(_owns(msg.sender, profileId));
-        // The code below will delete a key/value pair from the metadata mapping
-        delete profiles[profileId].metadata[namespace + ":" + metaKey];
-        // ^^ ** Does delete work like this?
-    }
-```
-
-```
-    function removeGlobalMetadata(string metaKey, uint256 profileId) external {
-        require(_owns(msg.sender, profileId));
-        delete profiles[profileId].metadata["global:" + metaKey];
-}
-```
 ## Use Cases
 
 You profile/identity could be exported to different social networks where your ERC-ME token can represent your profile (with name, handle, follower/following count). Instead of storing user info, social networks could simply concern themselves with the UX. user info would be hosted on the blockchain instead of being hosted off chain. For example, that means people with high follower counts on one platform wouldn't have to start from zero again on other platforms.
@@ -320,6 +118,22 @@ Another minor limitation is something inherent to Solidity. Because Solidity doe
 
 We are still looking into other modifications we can make to further optimize the contracts and future-proof them.
 
+## Crowdfunding
+
+In Q1, we will be holding a crowdfunding event to fund ERC-ME's development. There will both a presale and a main sale. **The presale will take the form of a game** where people who beat the game will gain access to the ERC-ME beta test as well as help fund ERC-ME's development. The mainsale will be a normal sale where ERC20 tokens are minted in exchange for ether.
+
+The ERC-721 tokens minted during the presale will serve as passes for access to the beta and special status shall be given to beta testers's `Profile`s once the ERC-ME contracts are deployed on the mainnet while no use has been devised for the minted ERC-20 tokens. We do not want to make our platform inconvenient to use by forcing the use of a token therefore the utility of the ERC-20 will be subject to change until a suitable use case has been conceived.
+
+Both the presale and mainsale have a combined cap of 15000 ETH (subject to change). If the cap is reached during the presale then the mainsale will not be held.
+
+#### Presale Details
+
+The goal of participants is to mint an ERC721 token proving they have managed to beat the game. This token will grant them access to the ERC-ME beta. Once the contracts are deployed, the opening of our presale will be announced on Twitter, Reddit and our blog. There is no time limit, the sale will go on until the cap (15000 ETH) is reached. If the cap is never reached then the mainsale will be held a month later.
+
+#### Mainsale Details
+
+*Details coming soon.*
+
 ## Roadmap
 
 This roadmap is subject to change, I'm hoping it'll take less time than planned but I made conservative estimates just in case.
@@ -328,7 +142,7 @@ This roadmap is subject to change, I'm hoping it'll take less time than planned 
    - Write whitepaper
    - Deploy website
    - Create initial version of Profile contracts
-   - Hold the crowdfunding event
+   - Hold the presale event
 2. Q2 2018
    - Hire team members and/or contractors to help build ERC-ME
    - Redesign contract architecture to make it clearer and upgradeable

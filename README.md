@@ -1,4 +1,4 @@
-# ERC-ME: A Standard for Tokenized Pseudo-identities
+# D-OZ: A Standard for Tokenized Pseudo-identities
 
 Last Revision: 08/02/2018
 
@@ -7,9 +7,9 @@ Ghilia Weldesselasie -- <a href='mailto:ghiliaweld@gmail.com'>ghiliaweld@gmail.c
 
 ## Abstract
 
-ERC-ME is a tokenized *Profile* specification standard that enables the creation and use of decentralized pseudo-identities.  The standard aims to build a common informational interface by which social networks, games and other services can host user experiences on their services without hosting or owning user information. ERC-ME hopes to power a standard upon which Dapps can build new social networks and games centered around users without holding user information. A future in which apps are sorely focused on the UX of their apps and crafting the best experience and where users can switch to any apps they like while sill maintaining their following and profile info.
+D-OZ is a tokenized *Profile* specification standard that enables the creation and use of decentralized pseudo-identities.  The standard aims to build a common informational interface by which social networks, games and other services can host user experiences on their services without hosting or owning user information. D-OZ hopes to power a standard upon which Dapps can build new social networks and games centered around users without holding user information. A future in which apps are sorely focused on the UX of their apps and crafting the best experience and where users can switch to any apps they like while sill maintaining their following and profile info.
 
-What ERC-ME is going for can be summed up in three words: **Experiences, not services**.
+What D-OZ is going for can be summed up in three words: **Experiences, not services**.
 
 ## Table Of Contents
 
@@ -28,7 +28,7 @@ What ERC-ME is going for can be summed up in three words: **Experiences, not ser
 
 What?:
 
-ERC-ME is a tokenized *Profile* specification standard that enables the creation and use of decentralized pseudo-identities.  The standard aims to build a common informational interface by which social networks, games and other services can host user experiences on their services without hosting or owning user information.
+D-OZ is a tokenized *Profile* specification standard that enables the creation and use of decentralized pseudo-identities.  The standard aims to build a common informational interface by which social networks, games and other services can host user experiences on their services without hosting or owning user information.
 
 Why?:
 
@@ -39,13 +39,13 @@ Why?:
 3. There are no solution currently addressing pseudo-identities and their potential use on social network/game Dapps on the blockchain.
 
 
-**ERC-ME intends to provide a decentralized standard upon which digital and tokenized pseudo-identities can be used in various Dapps on the blockchain without information being tied to any single service.**
+**D-OZ intends to provide a decentralized standard upon which digital and tokenized pseudo-identities can be used in various Dapps on the blockchain without information being tied to any single service.**
 
 ## Specification
 
 ### Overview
 
-Each `Profile` on the ERC-ME contract is represented by an *Non-Fungible [ERC-721](https://github.com/ethereum/eips/issues/721) token*, meaning they can be transferred, traded and since they are actually a `struct` that mean that state changes can be made to them. In this section we will go over the specification of each `Profile`.
+Each `Profile` on the D-OZ contract is represented by an *Non-Fungible [ERC-721](https://github.com/ethereum/eips/issues/721) token*, meaning they can be transferred, traded and since they are actually a `struct` that mean that state changes can be made to them. In this section we will go over the specification of each `Profile`.
 
 ### The `Profile` (In-Depth)
 
@@ -104,7 +104,7 @@ The `dateCreated` property stores a timestamp of when a `profile` was created on
 
 ## Use Cases
 
-You profile/identity could be exported to different social networks where your ERC-ME token can represent your profile (with name, handle, follower/following count). Instead of storing user info, social networks could simply concern themselves with the UX. user info would be hosted on the blockchain instead of being hosted off chain. For example, that means people with high follower counts on one platform wouldn't have to start from zero again on other platforms.
+You profile/identity could be exported to different social networks where your D-OZ token can represent your profile (with name, handle, follower/following count). Instead of storing user info, social networks could simply concern themselves with the UX. user info would be hosted on the blockchain instead of being hosted off chain. For example, that means people with high follower counts on one platform wouldn't have to start from zero again on other platforms.
 
 Your profile can also be brought to different games as well. If the game studio wants, you progress in other games could also determine your current level in this game (meaning you could potentially start the game at a high level). Current rank could also be based on current follower count or follower-to-following ratio on other social networks.
 
@@ -112,7 +112,7 @@ You could sell your social media profile via a smart contract if it has a high f
 
 ## Limitations
 
-ERC-ME could potentially be very expensive since you would need to pay gas every time you want to make any state changes to your profile on the blockchain. However, this problem could be mitigated by something I call deferred updating where updating the `Profile` struct is deferred until a larger update can be made in one shot. For example, instead of updating your following count every time you follow someone and paying a gas fee for that, you could decide that every 10 new followings your following count should be updated. that way you only pay 1 gas fee but you can add 10 more profiles to your following count.
+D-OZ could potentially be very expensive since you would need to pay gas every time you want to make any state changes to your profile on the blockchain. However, this problem could be mitigated by something I call deferred updating where updating the `Profile` struct is deferred until a larger update can be made in one shot. For example, instead of updating your following count every time you follow someone and paying a gas fee for that, you could decide that every 10 new followings your following count should be updated. that way you only pay 1 gas fee but you can add 10 more profiles to your following count.
 
 Another minor limitation is something inherent to Solidity. Because Solidity does not yet support regexes(regular expressions) we cannot limit what characters can be used for names and handles. That means someone could theoretically have a name like *"#Gt~@? FwI9$^"* and a handle like *"H@<>t&2"*. While no user would be incentivized to create a name and handle like since it would be hard to find and hard for others to remember not to mention terrible branding as well, however depending on a lack of incentive is not enough. If not for the odd names, the lack of regex support also means the *real* Vitalik Buterin could have a name like *"Vitalik Buterin"* and someone else could create a similar name like *"VITALIK BUTERIN"* and it would be allowed which is a worst-case but more likely scenario. One solution that can mitigate this would be to only allow the creation of new profiles through our own Dapp and use regexes via JavaScript on the frontend, however that doesn't prevent savvy users from calling the contracts function directly. Solutions against this are still being looked into.
 
@@ -120,15 +120,15 @@ We are still looking into other modifications we can make to further optimize th
 
 ## Crowdfunding
 
-In Q1, we will be holding a crowdfunding event to fund ERC-ME's development. There will both a presale and a main sale. **The presale will take the form of a game** where people who beat the game will gain access to the ERC-ME beta test as well as help fund ERC-ME's development. The mainsale will be a normal sale where ERC20 tokens are minted in exchange for ether.
+In Q1, we will be holding a crowdfunding event to fund D-OZ's development. There will both a presale and a main sale. **The presale will take the form of a game** where people who beat the game will gain access to the D-OZ beta test as well as help fund D-OZ's development. The mainsale will be a normal sale where ERC20 tokens are minted in exchange for ether.
 
-The ERC-721 tokens minted during the presale will serve as passes for access to the beta and special status shall be given to beta testers's `Profile`s once the ERC-ME contracts are deployed on the mainnet while no use has been devised for the minted ERC-20 tokens. We do not want to make our platform inconvenient to use by forcing the use of a token therefore the utility of the ERC-20 will be subject to change until a suitable use case has been conceived.
+The ERC-721 tokens minted during the presale will serve as passes for access to the beta and special status shall be given to beta testers's `Profile`s once the D-OZ contracts are deployed on the mainnet while no use has been devised for the minted ERC-20 tokens. We do not want to make our platform inconvenient to use by forcing the use of a token therefore the utility of the ERC-20 will be subject to change until a suitable use case has been conceived.
 
 Both the presale and mainsale have a combined cap of 15000 ETH (subject to change). If the cap is reached during the presale then the mainsale will not be held.
 
 #### Presale Details
 
-The goal of participants is to mint an ERC721 token proving they have managed to beat the game. This token will grant them access to the ERC-ME beta. Once the contracts are deployed, the opening of our presale will be announced on Twitter, Reddit and our blog. There is no time limit, the sale will go on until the cap (15000 ETH) is reached. If the cap is never reached then the mainsale will be held a month later.
+The goal of participants is to mint an ERC721 token proving they have managed to beat the game. This token will grant them access to the D-OZ beta. Once the contracts are deployed, the opening of our presale will be announced on Twitter, Reddit and our blog. There is no time limit, the sale will go on until the cap (15000 ETH) is reached. If the cap is never reached then the mainsale will be held a month later.
 
 #### Mainsale Details
 
@@ -144,7 +144,7 @@ This roadmap is subject to change, I'm hoping it'll take less time than planned 
    - Create initial version of Profile contracts
    - Hold the presale event
 2. Q2 2018
-   - Hire team members and/or contractors to help build ERC-ME
+   - Hire team members and/or contractors to help build D-OZ
    - Redesign contract architecture to make it clearer and upgradeable
    - Code and audit smart contracts
    - Beta test on the Rinkeby test network with those who helped fund the project
@@ -154,5 +154,5 @@ This roadmap is subject to change, I'm hoping it'll take less time than planned 
    - Develop Profile creator Mini-Dapp
    - Develop Mini-Dapps like the Follow Dapp
 4. Q4 2018
-   - Invest in promising Dapps that use the ERC-ME standard
+   - Invest in promising Dapps that use the D-OZ standard
    - Anything else that sounds cool
